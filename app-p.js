@@ -10,16 +10,23 @@ const getParameter = (name) => {
 const urlHash = getParameter(safeLinkConfig.parameterName);
 const currentStep = getParameter("step");
 
-// Initially hide all flashshortner sections
-$("#main-flashshortner-step1").hide();
-$("#main-flashshortner-step2").hide();
-$("#main-final-redirect").hide();
+// Select the main blog post content element
+const blogPostElement = $("#Blog1");
+// Select the flashshortner step sections
+const step1Element = $("#main-flashshortner-step1");
+const step2Element = $("#main-flashshortner-step2");
+const finalRedirectElement = $("#main-final-redirect");
 
-// Logic for Step 1 or Step 2 based on parameter
+// Initially hide all flashshortner sections
+step1Element.hide();
+step2Element.hide();
+finalRedirectElement.hide();
+
+// Determine which content to show based on the step parameter
 if (urlHash != null && currentStep == "1") {
-	// Show Step 1 content
-	$("#Blog1").hide(); // Hide the main blog post content
-	$("#main-flashshortner-step1").show();
+	// Hide the main blog post and show Step 1
+	blogPostElement.hide();
+	step1Element.show();
 
 	/* show and enable button getlink */
 	$("#getlink1").removeClass('d-none');
@@ -75,9 +82,9 @@ if (urlHash != null && currentStep == "1") {
 	});
 
 } else if (urlHash != null && currentStep == "2") {
-	// Show Step 2 content
-	$("#Blog1").hide(); // Hide the main blog post content
-	$("#main-flashshortner-step2").show();
+	// Hide the main blog post and show Step 2
+	blogPostElement.hide();
+	step2Element.show();
 
 	// Logic for Step 2 (Loading and automatic redirect after a short delay)
 	var delay2 = 3; // Short timer duration for loading
@@ -89,10 +96,10 @@ if (urlHash != null && currentStep == "1") {
 
 } else {
 	/* if urlHash does not exist or step is not 1 or 2, show original post and remove flashshortner sections */
-	$("#Blog1").show(); // Show the main blog post content
-	$("#main-flashshortner-step1").remove(); // Remove step 1 HTML
-	$("#main-flashshortner-step2").remove(); // Remove step 2 HTML
-	$("#main-final-redirect").remove(); // Remove final redirect HTML
+	blogPostElement.show(); // Show the main blog post content
+	step1Element.remove(); // Remove step 1 HTML (optional, just hide might be enough)
+	step2Element.remove(); // Remove step 2 HTML (optional, just hide might be enough)
+	finalRedirectElement.remove(); // Remove final redirect HTML (optional, just hide might be enough)
 }
 
 // Existing window blur/focus handling
