@@ -18,15 +18,15 @@ const step2Element = $("#main-flashshortner-step2");
 const finalRedirectElement = $("#main-final-redirect");
 
 // Initially hide all flashshortner sections
-step1Element.hide();
-step2Element.hide();
-finalRedirectElement.hide();
+step1Element.addClass('d-none');
+step2Element.addClass('d-none');
+finalRedirectElement.addClass('d-none');
 
 // Determine which content to show based on the step parameter
 if (urlHash != null && currentStep == "1") {
 	// Hide the main blog post and show Step 1
-	blogPostElement.hide();
-	step1Element.show();
+	blogPostElement.addClass('d-none');
+	step1Element.removeClass('d-none');
 
 	/* show and enable button getlink */
 	$("#getlink1").removeClass('d-none');
@@ -83,8 +83,8 @@ if (urlHash != null && currentStep == "1") {
 
 } else if (urlHash != null && currentStep == "2") {
 	// Hide the main blog post and show Step 2
-	blogPostElement.hide();
-	step2Element.show();
+	blogPostElement.addClass('d-none');
+	step2Element.removeClass('d-none');
 
 	// Logic for Step 2 (Loading and automatic redirect after a short delay)
 	var delay2 = 3; // Short timer duration for loading
@@ -96,10 +96,10 @@ if (urlHash != null && currentStep == "1") {
 
 } else {
 	/* if urlHash does not exist or step is not 1 or 2, show original post and remove flashshortner sections */
-	blogPostElement.show(); // Show the main blog post content
-	step1Element.remove(); // Remove step 1 HTML (optional, just hide might be enough)
-	step2Element.remove(); // Remove step 2 HTML (optional, just hide might be enough)
-	finalRedirectElement.remove(); // Remove final redirect HTML (optional, just hide might be enough)
+	blogPostElement.removeClass('d-none'); // Show the main blog post content
+	step1Element.addClass('d-none'); // Hide step 1
+	step2Element.addClass('d-none'); // Hide step 2
+	finalRedirectElement.addClass('d-none'); // Hide final redirect
 }
 
 // Existing window blur/focus handling
