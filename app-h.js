@@ -28,18 +28,51 @@ $("#form-flashshortner").on("submit",function(e){
 					var randomIndex = parseInt(Math.random() * links.length);
 				}
 
-				var resulthashLink = `${links[randomIndex]}#?${safeLinkConfig.parameterName}=${aesCrypto.encrypt(trimString(url),trimString(safeLinkConfig.secretKey))}&step=1`;
+				// Generate the long flashshortner URL
+				var longFlashshortnerLink = `${links[randomIndex]}#?${safeLinkConfig.parameterName}=${aesCrypto.encrypt(trimString(url),trimString(safeLinkConfig.secretKey))}&step=1`;
 
-				$("#result-flashshortner").html(`
-					<div class="mb-3">
-					<input id="resultLink" class="form-control" value="${resulthashLink}" onclick="this.focus();this.select()" readonly="readonly" type="text"/>
-					</div>
-					<div class="text-center">
-					<button id="copyLink" type="button" class="btn btn-primary btn-sm">
-					<i class="bi bi-clipboard"></i> Copy Link
-					</button>
-					</div>
-					`);
+				// Use is.gd API to shorten the URL
+				$.ajax({
+					url: `https://is.gd/create.php?format=simple&url=${encodeURIComponent(longFlashshortnerLink)}`,
+					type: 'get',
+					dataType: 'text',
+					success: function(shortenedUrl) {
+						let displayLink = shortenedUrl;
+						// Check if the response is a valid URL or an error message
+						if (shortenedUrl.startsWith('http')) {
+							displayLink = shortenedUrl;
+						} else {
+							// If is.gd returns an error, display the original long link
+							console.error("is.gd shortening failed: ", shortenedUrl);
+							displayLink = longFlashshortnerLink;
+						}
+
+						$("#result-flashshortner").html(`
+							<div class="mb-3">
+							<input id="resultLink" class="form-control" value="${displayLink}" onclick="this.focus();this.select()" readonly="readonly" type="text"/>
+							</div>
+							<div class="text-center">
+							<button id="copyLink" type="button" class="btn btn-primary btn-sm">
+							<i class="bi bi-clipboard"></i> Copy Link
+							</button>
+							</div>
+						`);
+					},
+					error: function(jqXHR, textStatus, errorThrown) {
+						console.error("is.gd AJAX error: ", textStatus, errorThrown);
+						// On AJAX error, display the original long link
+						$("#result-flashshortner").html(`
+							<div class="mb-3">
+							<input id="resultLink" class="form-control" value="${longFlashshortnerLink}" onclick="this.focus();this.select()" readonly="readonly" type="text"/>
+							</div>
+							<div class="text-center">
+							<button id="copyLink" type="button" class="btn btn-primary btn-sm">
+							<i class="bi bi-clipboard"></i> Copy Link
+							</button>
+							</div>
+						`);
+					}
+				});
 
 			}else {
 				/* no feed found */
