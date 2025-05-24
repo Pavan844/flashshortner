@@ -10,12 +10,17 @@ const getParameter = (name) => {
 const urlHash = getParameter(safeLinkConfig.parameterName);
 const currentStep = getParameter("step");
 
-/* push new url to browser (remove hash parameter) - keep step parameter */
-// history.pushState(null, "", location.href.split("#")[0]); // We might adjust this depending on how we pass the step
+// Initially hide all flashshortner sections
+$("#main-flashshortner-step1").hide();
+$("#main-flashshortner-step2").hide();
+$("#main-final-redirect").hide();
 
-
-// Logic for Step 1
+// Logic for Step 1 or Step 2 based on parameter
 if (urlHash != null && currentStep == "1") {
+	// Show Step 1 content
+	$("#Blog1").hide(); // Hide the main blog post content
+	$("#main-flashshortner-step1").show();
+
 	/* show and enable button getlink */
 	$("#getlink1").removeClass('d-none');
 	$("#getlink1").prop('disabled', false);
@@ -70,24 +75,25 @@ if (urlHash != null && currentStep == "1") {
 	});
 
 } else if (urlHash != null && currentStep == "2") {
+	// Show Step 2 content
+	$("#Blog1").hide(); // Hide the main blog post content
+	$("#main-flashshortner-step2").show();
+
 	// Logic for Step 2 (Loading and automatic redirect after a short delay)
-
-	 // If just using a loading symbol and automatic redirect after a short delay:
-	 var delay2 = 3; // Short timer duration for loading
-	 setTimeout(function() {
-		 // Perform final redirect
-		 var urlHashDecode = aesCrypto.decrypt(trimString(urlHash), trimString(safeLinkConfig.secretKey));
-		 (urlHashDecode) ? window.location.href = urlHashDecode : alert('hash invalid');
-	 }, delay2 * 1000);
-
+	var delay2 = 3; // Short timer duration for loading
+	setTimeout(function() {
+		// Perform final redirect
+		var urlHashDecode = aesCrypto.decrypt(trimString(urlHash), trimString(safeLinkConfig.secretKey));
+		(urlHashDecode) ? window.location.href = urlHashDecode : alert('hash invalid');
+	}, delay2 * 1000);
 
 } else {
-	/* if urlHash does not exist or step is not 1 or 2, remove flashshortner sections */
-	$("#main-flashshortner-step1").remove();
-	$("#main-flashshortner-step2").remove();
-	$("#main-final-redirect").remove();
+	/* if urlHash does not exist or step is not 1 or 2, show original post and remove flashshortner sections */
+	$("#Blog1").show(); // Show the main blog post content
+	$("#main-flashshortner-step1").remove(); // Remove step 1 HTML
+	$("#main-flashshortner-step2").remove(); // Remove step 2 HTML
+	$("#main-final-redirect").remove(); // Remove final redirect HTML
 }
-
 
 // Existing window blur/focus handling
 window.onblur = function() {
